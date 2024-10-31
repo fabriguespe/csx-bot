@@ -1,34 +1,21 @@
 import { run, HandlerContext } from "@xmtp/message-kit";
 import { handler as agent } from "./handlers/agent.js";
-import { handleNotion } from "./handlers/notion.js";
-import { downloadPage } from "./lib/notion.js";
-import { handlePoap } from "./handlers/poap.js";
+import { updatePromptFile } from "./lib/notion.js";
 import { clearChatHistory } from "./handlers/agent.js";
-import fs from "fs";
 
-setupFiles();
 run(async (context: HandlerContext) => {
   const {
     typeId,
-    content: { content: text },
+    content: { content: text, command },
   } = context.message;
 
   if (typeId === "text") {
     console.log(text);
-    if (text.startsWith("/update")) {
-      await handleNotion(context);
+    if (command === "update") {
+      const success = await updatePromptFile();
+      if (success) await context.reply("Notion DB updated");
+      else await context.reply("Error updating Notion DB");
       clearChatHistory();
-      return;
-    } else if (text.startsWith("/poap list")) {
-      await handlePoap(context);
-      return;
     } else await agent(context);
   }
 });
-
-async function setupFiles() {
-  const page = await downloadPage();
-  fs.writeFileSync("src/data/notion_prompt.md", page);
-  fs.writeFileSync(".data/notion_prompt.md", page);
-  console.log("Notion DB updated");
-}

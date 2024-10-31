@@ -23,6 +23,7 @@ export async function textGeneration(
     content: userPrompt,
   });
   try {
+    console.log(messages);
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: messages as any,
@@ -95,4 +96,36 @@ export function responseParser(message: string) {
   // Remove any remaining leading or trailing whitespace
   trimmedMessage = trimmedMessage.trim();
   return trimmedMessage;
+}
+
+export async function processResponseWithIntent(
+  reply: string,
+  context: any,
+  senderAddress: string,
+  chatHistories: any
+) {
+  let messages = reply
+    .split("\n")
+    .map((message: string) => responseParser(message))
+    .filter((message): message is string => message.length > 0);
+
+  for (const message of messages) {
+    if (message.startsWith("/")) {
+      const response = await context.intent(message);
+      if (response && response.message) {
+        let msg = responseParser(response.message);
+
+        chatHistories[senderAddress]?.push({
+          role: "system",
+          content: msg,
+        });
+
+        await context.send(response.message);
+      }
+    } else {
+      await context.send(message);
+    }
+  }
+
+  return chatHistories;
 }

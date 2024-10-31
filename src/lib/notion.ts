@@ -1,4 +1,5 @@
 import { Client } from "@notionhq/client";
+import fs from "fs";
 
 const notion = new Client({
   auth: process.env.NOTION_API_KEY,
@@ -86,4 +87,34 @@ export async function updatePoapAddress(dbRowId: string, address: string) {
       },
     },
   });
+}
+
+export async function readPromptFile(sender: string) {
+  let page;
+  if (process.env.LOCAL) {
+    page = fs.readFileSync("src/data/notion_prompt.md", "utf8");
+  } else {
+    page = fs.readFileSync(".data/notion_prompt.md", "utf8");
+  }
+  console.log(page);
+  page = page.replace("{ADDRESS}", sender);
+  return page;
+}
+
+export async function updatePromptFile() {
+  try {
+    const page = await downloadPage();
+
+    if (process.env.LOCAL) {
+      //fs.writeFileSync("src/data/notion_prompt.md", page);
+    } else {
+      fs.writeFileSync(".data/notion_prompt.md", page);
+    }
+
+    console.log("Notion DB updated");
+    return true;
+  } catch (error) {
+    console.error("Error updating Notion DB", error);
+    return false;
+  }
 }
