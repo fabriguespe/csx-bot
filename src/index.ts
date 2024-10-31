@@ -28,7 +28,6 @@ run(async (context: HandlerContext) => {
 
 async function setupFiles() {
   const page = await downloadPage();
-  console.log("page", page);
   fs.writeFileSync("src/data/notion_prompt.md", page);
   fs.writeFileSync(".data/notion_prompt.md", page);
   console.log("Notion DB updated");
