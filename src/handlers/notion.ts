@@ -12,7 +12,7 @@ export async function handleNotion(context: HandlerContext) {
 
   if (command === "update") {
     const page = await downloadPage();
-    fs.writeFileSync("src/data/notion_prompt.md", page);
+    fs.writeFileSync(".data/notion_prompt.md", page);
     await context.reply("Notion DB updated");
   }
 }

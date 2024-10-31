@@ -27,13 +27,9 @@ run(async (context: HandlerContext) => {
 });
 
 async function setupFiles() {
-  if (!fs.existsSync(".data/db.json")) {
-    const dbfile = fs.readFileSync("src/data/db.json", "utf8");
-    fs.writeFileSync(".data/db.json", dbfile);
-    console.log("DB file created");
-  }
-
   const page = await downloadPage();
+  console.log("page", page);
   fs.writeFileSync("src/data/notion_prompt.md", page);
+  fs.writeFileSync(".data/notion_prompt.md", page);
   console.log("Notion DB updated");
 }
