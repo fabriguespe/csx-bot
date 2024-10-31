@@ -1,7 +1,6 @@
 import { HandlerContext } from "@xmtp/message-kit";
 import { textGeneration } from "../lib/openai.js";
 import fs from "fs";
-import { SUPPORTED_NETWORKS } from "../lib/learnweb3.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import { responseParser } from "../lib/openai.js";
@@ -76,7 +75,6 @@ async function generateSystemPrompt(sender: string) {
     "utf8"
   );
   page = page.replace("{ADDRESS}", sender);
-  page = page.replace("{NETWORKS}", SUPPORTED_NETWORKS.join(", "));
   return page;
 }
 

@@ -1,6 +1,5 @@
 import type { CommandGroup } from "@xmtp/message-kit";
 import { handlePoap } from "./handlers/poap.js";
-import { handleFaucet } from "./handlers/faucet.js";
 import { handleNotion } from "./handlers/notion.js";
 
 export const commands: CommandGroup[] = [
@@ -24,33 +23,6 @@ export const commands: CommandGroup[] = [
         handler: handlePoap,
         triggers: ["/poap list"],
         description: "List all POAPs.",
-        params: {},
-      },
-    ],
-  },
-  {
-    name: "Faucet",
-    description: "Get some testnet tokens.",
-    commands: [
-      {
-        command: "/faucet [address] [network]",
-        handler: handleFaucet,
-        triggers: ["/faucet"],
-        description: "Get some testnet tokens.",
-        params: {
-          address: {
-            type: "string",
-          },
-          network: {
-            type: "string",
-          },
-        },
-      },
-      {
-        command: "/networks",
-        triggers: ["/networks"],
-        handler: handleFaucet,
-        description: "Get the list of supported networks.",
         params: {},
       },
     ],
